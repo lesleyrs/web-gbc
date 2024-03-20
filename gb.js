@@ -41,8 +41,7 @@ class GameBoy {
           rom = file;
           sav = [...files].find(f => {
             const savExt = f.name.substring(f.name.lastIndexOf('.') + 1);
-            const savName = f.name.substring(0, f.name.lastIndexOf('.'));
-            return (savExt === "sav" || savExt === "sa2") && savName === name;
+            return (savExt === "sav" || savExt === "sa2") && f.name.startsWith(name);
           });
           if (!sav) {
             rom = files[0];
@@ -51,9 +50,8 @@ class GameBoy {
           }
         }
       }
-
       this.rom = rom.name;
-      this.sav = sav ? sav.name : undefined;
+      this.sav = sav ? sav.name : rom.name.substring(0, rom.name.lastIndexOf('.')) + ".sav";
 
       console.log(rom, sav);
 
@@ -379,6 +377,8 @@ class GameBoy {
     this.sav = rom.substring(0, rom.lastIndexOf('.')) + ".sav";
     const saveResponse = await fetch(this.sav, { cache: 'no-cache' });
     const saveData = await saveResponse.arrayBuffer();
+
+    console.log(response, saveResponse);
 
     this.#await_quit(data, saveData);
   }
