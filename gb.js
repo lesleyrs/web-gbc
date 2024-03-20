@@ -349,6 +349,10 @@ class GameBoy {
     update();
   }
 
+  quit() {
+    this.quit_request = true;
+  }
+
   save(sav) {
     let savBytes = new Uint8Array(this.wasm.instance.exports.memory.buffer, this.savebuffer_ptr, 32 * 1024);
     let blob = new Blob([savBytes], { type: 'application/octet-stream' });

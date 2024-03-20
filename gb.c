@@ -129,14 +129,14 @@ void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[LCD_WIDTH],
     }
   } else {
 #endif
-      for (unsigned int x = 0; x < LCD_WIDTH; x++) {
-        priv->fb[line][x] =
-            priv->selected_palette[(pixels[x] & LCD_PALETTE_ALL) >> 4]
-                                  [pixels[x] & 3];
-      }
-      // const uint32_t palette[] = {0xFFFFFF, 0xA5A5A5, 0x525252, 0x000000};
-      // for (unsigned int x = 0; x < LCD_WIDTH; x++)
-      //   priv->fb[line][x] = palette[pixels[x] & 3];
+    for (unsigned int x = 0; x < LCD_WIDTH; x++) {
+      priv->fb[line][x] =
+          priv->selected_palette[(pixels[x] & LCD_PALETTE_ALL) >> 4]
+                                [pixels[x] & 3];
+    }
+    // const uint32_t palette[] = {0xFFFFFF, 0xA5A5A5, 0x525252, 0x000000};
+    // for (unsigned int x = 0; x < LCD_WIDTH; x++)
+    //   priv->fb[line][x] = palette[pixels[x] & 3];
 #if PEANUT_FULL_GBC_SUPPORT
   }
 #endif
@@ -466,17 +466,20 @@ int main() {
     const char err_cart[] = "Unsupported cartridge.";
     printf(err_cart);
     alert(err_cart);
+    quit();
     break;
   }
   case GB_INIT_INVALID_CHECKSUM: {
     const char err_sum[] = "Invalid ROM: Checksum failure.";
     printf(err_sum);
     alert(err_sum);
+    quit();
     break;
   }
   default: {
     printf("Unknown error: %d", gb_ret);
     alert("Unknown error: check browser console");
+    quit();
     break;
   }
   }
