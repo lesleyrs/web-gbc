@@ -32,7 +32,6 @@ class GameBoy {
       event.preventDefault();
       this.quit_request = true;
       const files = event.dataTransfer.files;
-      let rom, sav = undefined;
 
       for (const file of files) {
         const ext = file.name.substring(file.name.lastIndexOf('.') + 1);
