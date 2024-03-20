@@ -4,6 +4,8 @@ gbc:
 gb:
 	clang --target=wasm32 -Wall -O3 -flto -nostdlib -Wl,--no-entry -Wl,--lto-O3 -Wl,--allow-undefined -Wl,--export-all -o gb.wasm gb.c minigb_apu/minigb_apu.c -DENABLE_SOUND -DENABLE_SOUND_MINIGB
 
+# NOTE: format C > make dist > upload to itch
+# TODO: try github actions for artifacts instead of docs directory
 dist: rom zip
 
 GB = docs/gb/
