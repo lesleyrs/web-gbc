@@ -118,19 +118,27 @@ class GameBoy {
           this.repeat_keys.add(event.code);
           break;
         case "ArrowUp":
-          event.preventDefault();
+          if (!event.altKey) {
+            event.preventDefault();
+          }
           this.wasm.instance.exports.press_up();
           break;
         case "ArrowRight":
-          event.preventDefault();
+          if (!event.altKey) {
+            event.preventDefault();
+          }
           this.wasm.instance.exports.press_right();
           break;
         case "ArrowDown":
-          event.preventDefault();
+          if (!event.altKey) {
+            event.preventDefault();
+          }
           this.wasm.instance.exports.press_down();
           break;
         case "ArrowLeft":
-          event.preventDefault();
+          if (!event.altKey) {
+            event.preventDefault();
+          }
           this.wasm.instance.exports.press_left();
           break;
         case "e":
