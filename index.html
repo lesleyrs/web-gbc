@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <link rel="icon" href="data:;base64,=">
+    <title>Web-GBC</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+        #gb {
+            image-rendering: pixelated;
+            border: 1px solid gray;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+    <script src="gb.js"></script>
+</head>
+<body>
+    <canvas id="gb" width="160" height="144"></canvas>
+    <script>
+(async () => {
+    gb = new GameBoy();
+    gb.rom = "main.gb";
+    gb.sav = gb.rom.substring(0, gb.rom.lastIndexOf('.')) + ".sav";
+
+    const response = await fetch(gb.rom, { cache: 'no-cache' });
+    const data = await response.arrayBuffer();
+
+    const saveResponse = await fetch(gb.sav, { cache: 'no-cache' });
+    const saveData = await saveResponse.arrayBuffer();
+
+    gb.start({ wasmPath: "gb.wasm", canvasId: "gb", rom: data, sav: saveData });
+})();
+    </script>
+</body>
+</html>

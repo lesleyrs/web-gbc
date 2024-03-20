@@ -1,0 +1,11 @@
+.cache
+compile_commands.json
+/*.wasm
+/*.bin
+/*.gbc
+/*.gb
+*.sav
+*.sa2
+*.rtc
+*.zip
+!main.gb
