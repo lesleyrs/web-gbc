@@ -5,7 +5,6 @@ void main(void) {
   // BGP_REG = 0x27U;
   // BGP_REG = DMG_PALETTE(DMG_BLACK, DMG_DARK_GRAY, DMG_LITE_GRAY, DMG_WHITE);
 
-  puts("");
   puts("    HOW TO USE:");
   puts("");
   puts("DRAG>DROP ROM+SAVE");
