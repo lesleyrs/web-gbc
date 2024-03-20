@@ -414,10 +414,16 @@ class GameBoy {
     }
     console.log("Received", romBytes.length, "rom bytes.");
 
-    for (let i = 0; i < savBytes.length; i++) {
-      this.wasm.instance.exports.load_sav(savBytes[i], i);
+    if (sav) {
+      for (let i = 0; i < savBytes.length; i++) {
+        this.wasm.instance.exports.load_sav(savBytes[i], i);
+      }
+      console.log("Received", savBytes.length, "sav bytes.");
+    } else {
+      for (let i = 0; i < 32 * 1024; i++) {
+        this.wasm.instance.exports.load_sav(0, i);
+      }
     }
-    console.log("Received", savBytes.length, "sav bytes.");
   }
 
   #reset(romBytes, savBytes) {
