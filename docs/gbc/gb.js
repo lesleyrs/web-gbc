@@ -32,7 +32,6 @@ class GameBoy {
       event.preventDefault();
       this.quit_request = true;
       const files = event.dataTransfer.files;
-      let rom, sav = undefined;
 
       for (const file of files) {
         const ext = file.name.substring(file.name.lastIndexOf('.') + 1);
@@ -41,8 +40,7 @@ class GameBoy {
           rom = file;
           sav = [...files].find(f => {
             const savExt = f.name.substring(f.name.lastIndexOf('.') + 1);
-            const savName = f.name.substring(0, f.name.lastIndexOf('.'));
-            return (savExt === "sav" || savExt === "sa2") && savName === name;
+            return (savExt === "sav" || savExt === "sa2") && f.name.startsWith(name);
           });
           if (!sav) {
             rom = files[0];
@@ -51,9 +49,8 @@ class GameBoy {
           }
         }
       }
-
       this.rom = rom.name;
-      this.sav = sav ? sav.name : undefined;
+      this.sav = sav ? sav.name : rom.name.substring(0, rom.name.lastIndexOf('.')) + ".sav";
 
       console.log(rom, sav);
 
@@ -101,6 +98,20 @@ class GameBoy {
         case "Shift":
           if (!event.ctrlKey && event.location == KeyboardEvent.DOM_KEY_LOCATION_RIGHT) {
             this.wasm.instance.exports.press_select();
+          }
+
+          if (!event.repeat) {
+            // NOTE: this is needed as keyUp wont fire for other keys if Shift is pressed
+            this.wasm.instance.exports.release_a();
+            this.wasm.instance.exports.release_b();
+            this.repeat_keys.delete("KeyS");
+            this.repeat_keys.delete("KeyW");
+            this.repeat_keys.delete("KeyA");
+            this.repeat_keys.delete("KeyQ");
+
+            this.startSec = audioCtx.currentTime + this.audio_latency;
+            this.turbo = false;
+            this.fast_mode = this.last_mode;
           }
           break;
         case "x":
@@ -380,6 +391,8 @@ class GameBoy {
     const saveResponse = await fetch(this.sav, { cache: 'no-cache' });
     const saveData = await saveResponse.arrayBuffer();
 
+    console.log(response, saveResponse);
+
     this.#await_quit(data, saveData);
   }
 
@@ -401,10 +414,16 @@ class GameBoy {
     }
     console.log("Received", romBytes.length, "rom bytes.");
 
-    for (let i = 0; i < savBytes.length; i++) {
-      this.wasm.instance.exports.load_sav(savBytes[i], i);
+    if (sav) {
+      for (let i = 0; i < savBytes.length; i++) {
+        this.wasm.instance.exports.load_sav(savBytes[i], i);
+      }
+      console.log("Received", savBytes.length, "sav bytes.");
+    } else {
+      for (let i = 0; i < 32 * 1024; i++) {
+        this.wasm.instance.exports.load_sav(0, i);
+      }
     }
-    console.log("Received", savBytes.length, "sav bytes.");
   }
 
   #reset(romBytes, savBytes) {
