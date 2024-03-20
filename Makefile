@@ -4,6 +4,8 @@ gbc:
 gb:
 	clang --target=wasm32 -Wall -O3 -flto -nostdlib -Wl,--no-entry -Wl,--lto-O3 -Wl,--allow-undefined -Wl,--export-all -o gb.wasm gb.c minigb_apu/minigb_apu.c -DENABLE_SOUND -DENABLE_SOUND_MINIGB
 
+dist: rom docs zip
+
 zip: gb
     ifeq ($(OS),Windows_NT)
 		pwsh -Command Compress-Archive -Path index.html, gb.js, gb.wasm, main.gb -DestinationPath web-gb.zip -Force
@@ -18,7 +20,7 @@ zip: gb
 GB = docs/gb/
 GBC = docs/gbc/
 
-dist: rom zip gb
+docs: gb
 	mkdir -p $(GB)
 	cp index.html $(GB)index.html
 	cp gb.js $(GB)gb.js
