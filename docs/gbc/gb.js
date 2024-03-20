@@ -137,7 +137,7 @@ class GameBoy {
         case "d":
         case "c":
         case " ":
-          if (!event.repeat && !this.turbo) {
+          if (!event.repeat && !this.turbo && !event.altKey) {
             this.startSec = audioCtx.currentTime + this.audio_latency;
             this.turbo = true;
             this.last_mode = this.fast_mode;
