@@ -100,6 +100,20 @@ class GameBoy {
           if (!event.ctrlKey && event.location == KeyboardEvent.DOM_KEY_LOCATION_RIGHT) {
             this.wasm.instance.exports.press_select();
           }
+
+          if (!event.repeat) {
+            // NOTE: this is needed as keyUp wont fire for other keys if Shift is pressed
+            this.wasm.instance.exports.release_a();
+            this.wasm.instance.exports.release_b();
+            this.repeat_keys.delete("KeyS");
+            this.repeat_keys.delete("KeyW");
+            this.repeat_keys.delete("KeyA");
+            this.repeat_keys.delete("KeyQ");
+
+            this.startSec = audioCtx.currentTime + this.audio_latency;
+            this.turbo = false;
+            this.fast_mode = this.last_mode;
+          }
           break;
         case "x":
           this.wasm.instance.exports.press_a();
