@@ -466,20 +466,17 @@ int main() {
     const char err_cart[] = "Unsupported cartridge.";
     printf(err_cart);
     alert(err_cart);
-    quit();
     break;
   }
   case GB_INIT_INVALID_CHECKSUM: {
     const char err_sum[] = "Invalid ROM: Checksum failure.";
     printf(err_sum);
     alert(err_sum);
-    quit();
     break;
   }
   default: {
     printf("Unknown error: %d", gb_ret);
     alert("Unknown error: check browser console");
-    quit();
     break;
   }
   }
