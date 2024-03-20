@@ -273,7 +273,7 @@ class GameBoy {
     window.addEventListener('keydown', this.keyDown);
     window.addEventListener('keyup', this.keyUp);
 
-    this.wasm.instance.exports.main() && this.exit();
+    this.wasm.instance.exports.main() && this.quit();
 
     const memory = new Uint16Array(this.wasm.instance.exports.memory.buffer);
     const imageData = this.ctx.createImageData(canvas.width, canvas.height);
@@ -281,7 +281,7 @@ class GameBoy {
 
     const update = () => {
       if (this.quit_request) {
-        this.quit = true;
+        this.exit = true;
         return;
       }
 
@@ -349,7 +349,7 @@ class GameBoy {
     update();
   }
 
-  exit() {
+  quit() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.quit_request = true;
   }
@@ -384,7 +384,7 @@ class GameBoy {
   }
 
   #await_quit(romBytes, savBytes) {
-    if (this.quit) {
+    if (this.exit) {
       this.#reset(romBytes, savBytes);
     } else {
       // NOTE: is there no better way to do this? 10 is magic
@@ -418,7 +418,7 @@ class GameBoy {
     this.keyDown = undefined;
     this.keyUp = undefined;
     this.quit_request = undefined;
-    this.quit = undefined;
+    this.exit = undefined;
     this.fetching = undefined;
     this.startSec = undefined;
     this.start({ wasmPath: "gb.wasm", canvasId: "gb", rom: romBytes, sav: savBytes });

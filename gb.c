@@ -95,7 +95,6 @@ void gb_error(struct gb_s *gb, const enum gb_error_e gb_err,
                                             "HALT FOREVER"};
   uint8_t instr_byte = __gb_read(gb, addr);
 
-  // TODO: see what happens on a real error, can call this.quit if needed
   save();
 
   if (addr >= 0x4000 && addr < 0x8000) {
@@ -116,6 +115,7 @@ void gb_error(struct gb_s *gb, const enum gb_error_e gb_err,
   }
 
   alert("Error: check browser console");
+  quit();
 }
 
 #if ENABLE_LCD
