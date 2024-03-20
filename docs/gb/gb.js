@@ -13,7 +13,7 @@ class GameBoy {
 
   async start({ wasmPath, canvasId, rom, sav }) {
     const canvas = document.getElementById(canvasId);
-    const ctx = canvas.getContext("2d", { alpha: false });
+    this.ctx = canvas.getContext("2d", { alpha: false });
     if (!this.wasm) {
       this.wasm = await WebAssembly.instantiateStreaming(fetch(wasmPath), {
         env: make_environment(this)
@@ -44,16 +44,18 @@ class GameBoy {
             const savName = f.name.substring(0, f.name.lastIndexOf('.'));
             return (savExt === "sav" || savExt === "sa2") && savName === name;
           });
-          if (sav) {
+          if (!sav) {
+            rom = files[0];
+          } else {
             break;
           }
         }
       }
 
-      console.log(rom, sav);
-
       this.rom = rom.name;
       this.sav = sav ? sav.name : undefined;
+
+      console.log(rom, sav);
 
       const romBytes = await rom.arrayBuffer();
       const savBytes = sav ? await sav.arrayBuffer() : undefined;
@@ -206,7 +208,6 @@ class GameBoy {
           break;
         case "Backspace":
           if (!event.repeat && !this.fetching) {
-            // this.quit_request = true;
             await this.fetch("main.gb");
           }
           break;
@@ -272,15 +273,14 @@ class GameBoy {
     window.addEventListener('keydown', this.keyDown);
     window.addEventListener('keyup', this.keyUp);
 
-    this.wasm.instance.exports.main();
+    this.wasm.instance.exports.main() && this.exit();
 
     const memory = new Uint16Array(this.wasm.instance.exports.memory.buffer);
-    const imageData = ctx.createImageData(canvas.width, canvas.height);
+    const imageData = this.ctx.createImageData(canvas.width, canvas.height);
     const audioCtx = new AudioContext();
 
     const update = () => {
       if (this.quit_request) {
-        // ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.quit = true;
         return;
       }
@@ -337,7 +337,7 @@ class GameBoy {
         imageData.data[index + 2] = (blue * 255) / 31;
         // imageData.data.fill(color & 0xFF, index, index + 3);
       }
-      ctx.putImageData(imageData, 0, 0);
+      this.ctx.putImageData(imageData, 0, 0);
 
       // NOTE: Pauses when tab focus is lost at x1 speed due to using rAF, maybe expose a toggle.
       if (this.fast_mode > 1 && !navigator.userAgent.includes("Firefox")) {
@@ -347,6 +347,11 @@ class GameBoy {
       }
     }
     update();
+  }
+
+  exit() {
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.quit_request = true;
   }
 
   save(sav) {
