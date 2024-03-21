@@ -9,6 +9,9 @@ class GameBoy {
     this.volume = 0.5;
     this.muted = false;
     this.audio_latency = 0.1;
+    this.samples = 548;
+    this.samplesRate = 32768;
+    this.channelCount = 2;
   }
 
   async start({ wasmPath, canvasId, rom, sav }) {
@@ -309,19 +312,19 @@ class GameBoy {
         const nowPlusLatency = nowSec + this.audio_latency;
         this.startSec = (this.startSec || nowPlusLatency);
         if (this.startSec >= nowSec) {
-          let buffer = audioCtx.createBuffer(2, 548, 32768);
+          let buffer = audioCtx.createBuffer(this.channelCount, this.samples, this.samplesRate);
           let channel0 = buffer.getChannelData(0);
           let channel1 = buffer.getChannelData(1);
           for (let i = 0; i < buffer.length; i++) {
-            channel0[i] = (memory[this.audiobuffer_ptr / 2 + i * 2] << 16) * this.volume / 2147483648.0;
-            channel1[i] = (memory[this.audiobuffer_ptr / 2 + i * 2 + 1] << 16) * this.volume / 2147483648.0;
+            channel0[i] = (memory[this.audiobuffer_ptr / 2 + i * this.channelCount] << 16) * this.volume / 2147483648.0;
+            channel1[i] = (memory[this.audiobuffer_ptr / 2 + i * this.channelCount + 1] << 16) * this.volume / 2147483648.0;
           }
           var source = audioCtx.createBufferSource();
           source.buffer = buffer;
           source.connect(audioCtx.destination);
           source.start(this.startSec / this.fast_mode);
 
-          const bufferSec = 548 / 32768;
+          const bufferSec = this.samples / this.samplesRate;
           this.startSec += bufferSec;
         } else {
           console.log(
