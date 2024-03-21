@@ -95,8 +95,6 @@ void gb_error(struct gb_s *gb, const enum gb_error_e gb_err,
                                             "HALT FOREVER"};
   uint8_t instr_byte = __gb_read(gb, addr);
 
-  save();
-
   if (addr >= 0x4000 && addr < 0x8000) {
     uint32_t rom_addr = (uint32_t)addr * (uint32_t)gb->selected_rom_bank;
 
@@ -115,6 +113,7 @@ void gb_error(struct gb_s *gb, const enum gb_error_e gb_err,
   }
 
   alert("Error: check browser console");
+  save();
   quit();
 }
 
