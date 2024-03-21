@@ -3,7 +3,7 @@ class GameBoy {
     this.rtc = true;
     this.fast_mode = 1;
     this.last_mode = 1;
-    this.ff_speed = 4;
+    this.turbo_speed = 4;
     this.turbo = false;
     this.repeat_keys = new Set();
     this.volume = 0.5;
@@ -96,40 +96,29 @@ class GameBoy {
           }
           break;
         case "Shift":
-          if (!event.ctrlKey) {
-            if (event.location == KeyboardEvent.DOM_KEY_LOCATION_RIGHT) {
-              this.wasm.instance.exports.press_select();
-            }
-
-            if (!event.repeat) {
-              // NOTE: this is needed as keyUp wont fire for other keys if Shift is pressed
-              this.wasm.instance.exports.release_a();
-              this.wasm.instance.exports.release_b();
-              this.repeat_keys.delete("KeyS");
-              this.repeat_keys.delete("KeyW");
-              this.repeat_keys.delete("KeyA");
-              this.repeat_keys.delete("KeyQ");
-
-              this.startSec = audioCtx.currentTime + this.audio_latency;
-              this.turbo = false;
-              this.fast_mode = this.last_mode;
-            }
+          if (!event.ctrlKey && event.location == KeyboardEvent.DOM_KEY_LOCATION_RIGHT) {
+            this.wasm.instance.exports.press_select();
           }
-
           break;
         case "x":
+        case "X":
           this.wasm.instance.exports.press_a();
           break;
         case "z":
+        case "Z":
           this.wasm.instance.exports.press_b();
           break;
         case "s":
         case "w":
+        case "S":
+        case "W":
           this.wasm.instance.exports.press_a();
           this.repeat_keys.add(event.code);
           break;
         case "a":
         case "q":
+        case "A":
+        case "Q":
           this.wasm.instance.exports.press_b();
           this.repeat_keys.add(event.code);
           break;
@@ -160,12 +149,15 @@ class GameBoy {
         case "e":
         case "d":
         case "c":
+        case "E":
+        case "D":
+        case "C":
         case " ":
           if (!event.repeat && !this.turbo && !event.altKey) {
             this.startSec = audioCtx.currentTime + this.audio_latency;
             this.turbo = true;
             this.last_mode = this.fast_mode;
-            console.log("Holding fast-forward key, Fast mode is " + (this.fast_mode = this.ff_speed));
+            console.log("Holding turbo key, Fast mode is " + (this.fast_mode = this.turbo_speed));
           }
           break;
         case "1":
@@ -180,7 +172,7 @@ class GameBoy {
         case "9":
           if (!event.repeat) {
             if (event.altKey) {
-              console.log("Default fast-forward speed is set to " + (this.ff_speed = event.key));
+              console.log("Default fast-forward speed is set to " + (this.turbo_speed = event.key));
             } else {
               this.startSec = audioCtx.currentTime + this.audio_latency;
               console.log("Fast-forward mode is set to " + (this.fast_mode = event.key));
@@ -237,18 +229,24 @@ class GameBoy {
           this.wasm.instance.exports.release_select();
           break;
         case "x":
+        case "X":
           this.wasm.instance.exports.release_a();
           break;
         case "z":
+        case "Z":
           this.wasm.instance.exports.release_b();
           break;
         case "s":
         case "w":
+        case "S":
+        case "W":
           this.wasm.instance.exports.release_a();
           this.repeat_keys.delete(event.code);
           break;
         case "a":
         case "q":
+        case "A":
+        case "Q":
           this.wasm.instance.exports.release_b();
           this.repeat_keys.delete(event.code);
           break;
@@ -267,6 +265,9 @@ class GameBoy {
         case "e":
         case "c":
         case "d":
+        case "E":
+        case "C":
+        case "D":
         case " ":
           this.startSec = audioCtx.currentTime + this.audio_latency;
           this.turbo = false;
