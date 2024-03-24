@@ -25,6 +25,7 @@ unsigned char rom_bytes[8 * 1024 * 1024] = {};
 unsigned char sav_bytes[32 * 1024] = {};
 #define SAMPLE_BYTES 548 * 4
 uint8_t audio_buffer[SAMPLE_BYTES];
+uint8_t link_byte;
 
 int is_cgb_mode() {
 #if PEANUT_FULL_GBC_SUPPORT
@@ -450,6 +451,17 @@ void set_time(uint8_t rtc) {
   }
 }
 
+void gb_serial_tx(struct gb_s *gb, const uint8_t tx) {
+  // printf("Transmitting byte: %02X\n", tx);
+  link_byte = tx;
+}
+
+enum gb_serial_rx_ret_e gb_serial_rx(struct gb_s *gb, uint8_t *rx) {
+  *rx = link_byte;
+  // return GB_SERIAL_RX_NO_CONNECTION;
+  return GB_SERIAL_RX_SUCCESS;
+}
+
 int main() {
   priv.rom = rom_bytes;
   priv.cart_ram = sav_bytes;
@@ -500,6 +512,10 @@ int main() {
 #if defined(ENABLE_SOUND) && defined(ENABLE_SOUND_MINIGB)
   audio_init();
 #endif
+
+  if (link()) {
+    gb_init_serial(&gb, &gb_serial_tx, &gb_serial_rx);
+  }
 
 #if ENABLE_LCD
   gb_init_lcd(&gb, &lcd_draw_line);
