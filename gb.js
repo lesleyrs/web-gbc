@@ -1,7 +1,7 @@
 class GameBoy {
   constructor() {
     this.rtc = true;
-    this.link_cable = true;
+    this.link = true;
     this.fast_mode = 1;
     this.last_mode = 1;
     this.turbo_speed = 4;
@@ -213,7 +213,8 @@ class GameBoy {
           console.log("Audio", this.muted ? "muted" : "unmuted");
           break;
         case "r":
-          if (!event.repeat && !event.ctrlKey) {
+          if (!event.repeat && event.ctrlKey) {
+            event.preventDefault();
             this.wasm.instance.exports.reset();
           }
           break;
@@ -370,8 +371,8 @@ class GameBoy {
     update();
   }
 
-  link() {
-    return this.link_cable;
+  connect() {
+    return this.link;
   }
 
   quit() {

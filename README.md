@@ -22,4 +22,4 @@ Mobile webpage layout, touch and controller support, fix fast-forward audio (and
 
 + Fast forward is disabled on Firefox as setTimeout does not work correctly so it uses requestAnimationFrame exclusively, but does work on Chrome, Edge and presumably all other chromium-based browsers.
 
-+ Link cable is enabled by default and doesn't use any networking but duplicates sent data back to you, this allows you to trade with yourself etc. Linking causes some games to break at the moment like tetris, so you can disable it with `gb.link_cable = false`.
++ Link cable is enabled by default and doesn't use any networking but duplicates sent data back to you, this allows you to trade with yourself etc. Linking causes some games to break at the moment like tetris, so you can disable it with `gb.link = false`.

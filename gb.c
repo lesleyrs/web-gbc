@@ -431,7 +431,7 @@ void previous_palette() {
 void set_palette() {
   if (!is_cgb_mode()) {
     manual_assign_palette(&priv, selected_palette);
-    printf("Now using palette %d", selected_palette + 1);
+    printf("Show palette %d", selected_palette + 1);
   }
 }
 
@@ -513,7 +513,7 @@ int main() {
   audio_init();
 #endif
 
-  if (link()) {
+  if (connect()) {
     gb_init_serial(&gb, &gb_serial_tx, &gb_serial_rx);
   }
 
