@@ -2,7 +2,7 @@
 Small non-emscripten build, supports fast forward and rapid a+b. Inspired by dev videos of [raylib.js](https://github.com/tsoding/zozlib.js).
 
 ## Controls
-Search `keyDown` in [gb.js](gb.js). You can drag & drop a rom on the canvas to load it (multiple files work, for saves). The initial canvas will be 160x144, zoom in to scale it up. The bookmark bar can be toggled with `Ctrl-Shift-B` for vertical space. Other browser console options are:
+Search `keyDown` in [gb.js](gb.js). You can drag & drop a rom on the canvas to load it (multiple files work, for saves). The initial canvas will be 160x144, zoom in to scale it up. Use `Ctrl-Shift-B` to toggle the bookmark bar for more vertical screen space. Other browser console options are:
 
 + `gb.fetch("path/to/rom")`: Fetch rom and save with same name. You can fetch from disk using relative path if hosted locally or from a link like https://hh.gbdev.io/ if it has the correct headers.
 
