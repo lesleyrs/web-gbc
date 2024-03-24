@@ -2,11 +2,13 @@
 Small non-emscripten build, supports fast forward and rapid a+b. Inspired by dev videos of [raylib.js](https://github.com/tsoding/zozlib.js).
 
 ## Controls
-Search for `keyDown` in [gb.js](gb.js). To load a rom you can drag and drop onto the canvas (multiple files work, for saves). The initial canvas will be 160x144, zoom in to scale it up. For extra vertical screen space, the bookmark bar can be toggled with `Ctrl-Shift-B`. Extra options are available through the browser console:
+Search `keyDown` in [gb.js](gb.js). You can drag & drop a rom on the canvas to load it (multiple files work, for saves). The initial canvas will be 160x144, zoom in to scale it up. The bookmark bar can be toggled with `Ctrl-Shift-B` for vertical space. Other browser console options are:
 
-+ `gb.fetch("path/to/rom")`: Fetches a rom and will also try to get a save file with same name + path. You can fetch from disk using relative path if hosted locally or from external sources like https://hh.gbdev.io/ but it will need the CORS header set.
++ `gb.fetch("path/to/rom")`: Fetches rom and tries to get a save with same name + path. You can fetch from disk using relative path if hosted locally or from a link like https://hh.gbdev.io/ if it has the correct headers.
 
 + `gb.rtc = false`: Resets the RTC in some games, then drag & drop or fetch the game again.
+
++ `gb.link = false`: Disable link cable if it breaks your game[^1], then drag & drop or fetch the game again.
 
 ## Build
 Requires `clang` compiler for wasm32 target, call `make` or just copy/paste the command from makefile. Then run a webserver such as `py -m http.server` for Windows or `python3 -m http.server` otherwise.
@@ -22,4 +24,4 @@ Mobile webpage layout, touch and controller support, fix fast-forward audio (and
 
 + Fast forward is disabled on Firefox as setTimeout does not work correctly so it uses requestAnimationFrame exclusively, but does work on Chrome, Edge and presumably all other chromium-based browsers.
 
-+ Link cable is enabled by default and doesn't use any networking but duplicates sent data back to you, this allows you to trade with yourself etc. Linking causes some games to break at the moment like tetris, so you can disable it with `gb.link = false`.
++ [^1]: Link cable is enabled by default and doesn't use any networking but duplicates sent data back to you, this allows you to trade with yourself etc. Linking causes some games to break at the moment like tetris, so you can disable it with `gb.link = false`.
