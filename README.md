@@ -15,9 +15,11 @@ Requires `clang` compiler for wasm32 target, call `make` or just copy/paste the 
 Optional: To embed a rom use `xxd -i rom.gbc > rom.h`, include the header in [gb.c](gb.c) and pass it to priv.rom to set the game. `#embed` could be used in the future when clang supports it. If you are doing this you can also remove the allocated memory for `rom_bytes` and other rom loading code.
 
 ## To do
-Mobile webpage layout, touch and controller support, serial communication, fix fast-forward audio.
+Mobile webpage layout, touch and controller support, fix fast-forward audio (and this.always_run).
 
 ## Limitations
 + Peanut-GB `cgb` branch is being used for GBC games support but it's not flawless, there are some graphical glitches and CGB boot roms can't be used for now (https://github.com/LIJI32/SameBoy/tree/master/BootROMs).
 
 + Fast forward is disabled on Firefox as setTimeout does not work correctly so it uses requestAnimationFrame exclusively, but does work on Chrome, Edge and presumably all other chromium-based browsers.
+
++ Link cable is enabled by default and doesn't use any networking but duplicates sent data back to you, this allows you to trade with yourself etc. Linking causes some games to break at the moment like tetris, so you can disable it with `gb.link_cable = false`.
