@@ -452,8 +452,8 @@ void set_time(uint8_t rtc) {
 }
 
 void gb_serial_tx(struct gb_s *gb, const uint8_t tx) {
-  // printf("Transmitting byte: %02X\n", tx);
   link_byte = tx;
+  // printf("Sent byte: %02X\n", tx);
 }
 
 enum gb_serial_rx_ret_e gb_serial_rx(struct gb_s *gb, uint8_t *rx) {
