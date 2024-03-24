@@ -1,6 +1,7 @@
 class GameBoy {
   constructor() {
     this.rtc = true;
+    this.link = true;
     this.fast_mode = 1;
     this.last_mode = 1;
     this.turbo_speed = 4;
@@ -12,6 +13,7 @@ class GameBoy {
     this.samples = 548;
     this.samplesRate = 32768;
     this.channelCount = 2;
+    this.always_run = false;
   }
 
   async start({ wasmPath, canvasId, rom, sav }) {
@@ -211,7 +213,8 @@ class GameBoy {
           console.log("Audio", this.muted ? "muted" : "unmuted");
           break;
         case "r":
-          if (!event.repeat && !event.ctrlKey) {
+          if (!event.repeat && event.ctrlKey) {
+            event.preventDefault();
             this.wasm.instance.exports.reset();
           }
           break;
@@ -357,14 +360,19 @@ class GameBoy {
       }
       this.ctx.putImageData(imageData, 0, 0);
 
-      // NOTE: Pauses when tab focus is lost at x1 speed due to using rAF, maybe expose a toggle.
-      if (this.fast_mode > 1 && !navigator.userAgent.includes("Firefox")) {
-        setTimeout(update, 1000 / (60 * this.fast_mode));
-      } else {
-        requestAnimationFrame(update);
+      if (!navigator.userAgent.includes("Firefox")) {
+        if (this.fast_mode > 1 || this.always_run) {
+          setTimeout(update, 1000 / (60 * this.fast_mode));
+        } else {
+          requestAnimationFrame(update);
+        }
       }
     }
     update();
+  }
+
+  connect() {
+    return this.link;
   }
 
   quit() {
