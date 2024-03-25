@@ -360,12 +360,10 @@ class GameBoy {
       }
       this.ctx.putImageData(imageData, 0, 0);
 
-      if (!navigator.userAgent.includes("Firefox")) {
-        if (this.fast_mode > 1 || this.always_run) {
-          setTimeout(update, 1000 / (60 * this.fast_mode));
-        } else {
-          requestAnimationFrame(update);
-        }
+      if (!navigator.userAgent.includes("Firefox") && (this.fast_mode > 1 || this.always_run)) {
+        setTimeout(update, 1000 / (60 * this.fast_mode));
+      } else {
+        requestAnimationFrame(update);
       }
     }
     update();
