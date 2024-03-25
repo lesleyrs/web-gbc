@@ -22,6 +22,6 @@ Mobile webpage layout, touch and controller support, fix fast-forward audio (and
 ## Limitations
 + Peanut-GB `cgb` branch is being used for GBC games support but it's not flawless, there are some graphical glitches and CGB boot roms can't be used for now (https://github.com/LIJI32/SameBoy/tree/master/BootROMs).
 
-+ Firefox has issues with setTimeout so fast-forward shouldn't work. Also Firefox on localhost it seems to have vsync issues?
++ setTimeout doesn't work on Firefox so you can't use fast-forward. Firefox on localhost seems to have vsync issues too?
 
 [^1]: Link cable is enabled by default and doesn't use any networking but duplicates sent data back to you, this allows you to trade with yourself etc. Linking causes some games to break at the moment like tetris.
