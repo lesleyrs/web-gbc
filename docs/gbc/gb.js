@@ -13,7 +13,6 @@ class GameBoy {
     this.samples = 548;
     this.samplesRate = 32768;
     this.channelCount = 2;
-    this.always_run = false;
   }
 
   async start({ wasmPath, canvasId, rom, sav }) {
@@ -307,6 +306,30 @@ class GameBoy {
       }
 
       this.wasm.instance.exports.run_frame();
+
+      if (this.repeat_keys.has("KeyS") || this.repeat_keys.has("KeyW")) {
+        this.wasm.instance.exports.repeat_a();
+      }
+      if (this.repeat_keys.has("KeyA") || this.repeat_keys.has("KeyQ")) {
+        this.wasm.instance.exports.repeat_b();
+      }
+
+      for (let i = 0; i < canvas.width * canvas.height; i++) {
+        const color = memory[this.framebuffer_ptr / 2 + i];
+        const index = i * 4;
+        imageData.data[index + 3] = 255;
+
+        const red = (color >> 10) & 0x1F;
+        const green = (color >> 5) & 0x1F;
+        const blue = color & 0x1F;
+
+        imageData.data[index] = (red * 255) / 31;
+        imageData.data[index + 1] = (green * 255) / 31;
+        imageData.data[index + 2] = (blue * 255) / 31;
+        // imageData.data.fill(color & 0xFF, index, index + 3);
+      }
+      this.ctx.putImageData(imageData, 0, 0);
+
       if (!this.muted) {
         // https://binji.github.io/posts/binjgb-on-the-web-part-2/
         this.wasm.instance.exports.get_audio_callback();
@@ -337,30 +360,7 @@ class GameBoy {
         }
       }
 
-      if (this.repeat_keys.has("KeyS") || this.repeat_keys.has("KeyW")) {
-        this.wasm.instance.exports.repeat_a();
-      }
-      if (this.repeat_keys.has("KeyA") || this.repeat_keys.has("KeyQ")) {
-        this.wasm.instance.exports.repeat_b();
-      }
-
-      for (let i = 0; i < canvas.width * canvas.height; i++) {
-        const color = memory[this.framebuffer_ptr / 2 + i];
-        const index = i * 4;
-        imageData.data[index + 3] = 255;
-
-        const red = (color >> 10) & 0x1F;
-        const green = (color >> 5) & 0x1F;
-        const blue = color & 0x1F;
-
-        imageData.data[index] = (red * 255) / 31;
-        imageData.data[index + 1] = (green * 255) / 31;
-        imageData.data[index + 2] = (blue * 255) / 31;
-        // imageData.data.fill(color & 0xFF, index, index + 3);
-      }
-      this.ctx.putImageData(imageData, 0, 0);
-
-      if (this.fast_mode > 1 || this.always_run) {
+      if (this.fast_mode > 1) {
         setTimeout(update, 1000 / (60 * this.fast_mode));
       } else {
         requestAnimationFrame(update);

@@ -17,7 +17,7 @@ Requires `clang` compiler for wasm32 target, call `make` or just copy/paste the 
 Optional: To embed a rom use `xxd -i rom.gbc > rom.h`, include the header in [gb.c](gb.c) and pass it to priv.rom to set the game. `#embed` could be used in the future when clang supports it. If you are doing this you can also remove the allocated memory for `rom_bytes` and other rom loading code.
 
 ## To do
-Mobile webpage layout, touch and controller support, fix fast-forward audio (and this.always_run+toggle).
+Mobile webpage layout, touch and controller support, improve fast-forward audio.
 
 ## Limitations
 + Peanut-GB `cgb` branch is being used for GBC games support but it's not flawless, there are some graphical glitches and CGB boot roms can't be used for now (https://github.com/LIJI32/SameBoy/tree/master/BootROMs).
