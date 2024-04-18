@@ -493,7 +493,7 @@ class GameBoy {
       format += String.fromCharCode(memory[i++]);
     }
 
-    const separators = ["%02X", "%04X", "%d", "%u", "%s"];
+    const separators = ["%02X", "%04X", "%d", "%i", "%u", "%s"];
 
     let parts = [];
     let usedSeparators = [];
