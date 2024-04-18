@@ -7,7 +7,7 @@ class GameBoy {
     this.turbo_speed = 4;
     this.turbo = false;
     this.repeat_keys = new Set();
-    this.volume = 0.5;
+    this.volume = 5;
     this.muted = false;
     this.audio_latency = 0.1;
     this.samples = 548;
@@ -185,26 +185,28 @@ class GameBoy {
           break;
         case "0":
           if (!event.ctrlKey) {
-            this.volume = 0.5;
-            console.log("Volume reset: " + this.volume);
+            this.volume = 5;
+            console.log("Volume reset: " + this.volume / 10);
           }
           break;
         case "-":
           if (!event.ctrlKey) {
-            this.volume -= 0.1;
-            if (this.volume < 0 + Number.EPSILON) {
+            this.volume -= 1;
+            if (this.volume < 0) {
               this.volume = 0;
+            } else {
+              console.log("Volume: " + this.volume / 10);
             }
-            console.log("Volume: " + this.volume);
           }
           break;
         case "=":
           if (!event.ctrlKey) {
-            this.volume += 0.1;
-            if (this.volume > 1 - Number.EPSILON) {
-              this.volume = 1;
+            this.volume += 1;
+            if (this.volume > 10) {
+              this.volume = 10;
+            } else {
+              console.log("Volume: " + this.volume / 10);
             }
-            console.log("Volume: " + this.volume);
           }
           break;
         case "m":
@@ -342,8 +344,8 @@ class GameBoy {
           let channel0 = buffer.getChannelData(0);
           let channel1 = buffer.getChannelData(1);
           for (let i = 0; i < buffer.length; i++) {
-            channel0[i] = (memory[this.audiobuffer_ptr / 2 + i * this.channelCount] << 16) * this.volume / 2147483648.0;
-            channel1[i] = (memory[this.audiobuffer_ptr / 2 + i * this.channelCount + 1] << 16) * this.volume / 2147483648.0;
+            channel0[i] = (memory[this.audiobuffer_ptr / 2 + i * this.channelCount] << 16) * (this.volume / 10) / 2147483648.0;
+            channel1[i] = (memory[this.audiobuffer_ptr / 2 + i * this.channelCount + 1] << 16) * (this.volume / 10) / 2147483648.0;
           }
           var source = audioCtx.createBufferSource();
           source.buffer = buffer;
